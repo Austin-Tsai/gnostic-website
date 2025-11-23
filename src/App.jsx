@@ -74,9 +74,9 @@ function App() {
             <div className="header">Plain Text</div>
           </div>
           {Object.entries(database).map(([time, data], index) => {
-            if (searchTerm != '' && !data.metadata_json.title.toLowerCase().includes(searchTerm.toLowerCase()) 
+            if (searchTerm != '' && !data.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) 
               && !data.url.toLowerCase().includes(searchTerm.toLowerCase())
-              && !data.metadata_json.author.toLowerCase().includes(searchTerm.toLowerCase())) return;
+              && !data.metadata.author.toLowerCase().includes(searchTerm.toLowerCase())) return;
               // && !data.ml_keywords.toLowerCase().includes(searchTerm.toLowerCase())
               // && !data.metadata_json.html_keywords.toLowerCase().includes(searchTerm.toLowerCase())) return;
 
@@ -92,8 +92,8 @@ function App() {
             
             return <div className="row" key={data.id}>
               <div className="item">{dayjs(time).format("MM/DD/YY")}</div>
-              {Object.entries(data["metadata_json"]).map(([category, info], index) => {
-                if (category == "html_keywords") {
+              {Object.entries(data["metadata"]).map(([category, info], index) => {
+                if (category == "htmlkeywords") {
                   // {console.log(info)}
                   return <div className="item">
                     {data.html_show ? <div>{info.join(", ")}</div> : <div></div>}
@@ -108,7 +108,7 @@ function App() {
                   return <div className="item">{info}</div>
                 })}
                 <div className="item">
-                    {data.ml_show ? <div>{data.ml_keywords.join(", ")}</div> : <div></div>}
+                    {data.ml_show && data.keywords.ml_keywords ? <div>{data.keywords.ml_keywords.join(", ")}</div> : <div></div>}
                     <button onClick={() => handleShow(time, 'ml_show')}>{data.ml_show ? "Hide" : "Show"}</button>
                   </div>
                 <div className="item">
@@ -118,7 +118,7 @@ function App() {
                 <div className="item">
                   <Link 
                     to={"page/"+time}
-                    state={{ plainText: data.body_json.paragraphs }}
+                    state={{ plainText: data.body.paragraphs }}
                   >Plain Text</Link>
                 </div>
             </div>
