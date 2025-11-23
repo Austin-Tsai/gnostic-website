@@ -15,15 +15,27 @@ function App() {
       try {
         const response = await fetch('http://localhost:8000');
         const text = await response.text();
-        console.log(text);
-        const data = JSON.parse(text);
-        console.log(data);
+        const outer = JSON.parse(text);
+        console.log(outer);
+
+        const inner = Object.fromEntries(
+          Object.entries(outer).map(([key, value]) => {
+            try {
+              // If value is itself a JSON string, parse it
+              return [key, JSON.parse(value)];
+            } catch {
+              // If not JSON (e.g. status), keep as-is
+              return [key, value];
+            }
+          })
+        );
+        console.log(inner);
         const processedData = Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [
-          key,
-          { ...value, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false}
-        ])
-      );
+          Object.entries(data).map(([key, value]) => [
+            key,
+            { ...value, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false}
+          ])
+        );
         setData(processedData);
       }
       catch (err) {
