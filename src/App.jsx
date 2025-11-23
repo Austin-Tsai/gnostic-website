@@ -92,7 +92,7 @@ function App() {
     <>
       <div className="wrapper">
         <div className="search">
-          <label htmlFor="search">Search Terms (Comma Separated List)</label>
+          <label htmlFor="search">Search</label>
           <input
               type="text"
               name="search"
@@ -115,6 +115,7 @@ function App() {
           {Object.entries(database).map(([time, data], index) => {
             if (searchTerm != '' && !data.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) 
               && !data.url.toLowerCase().includes(searchTerm.toLowerCase())) return;
+
               // && !data.metadata.author.toLowerCase().includes(searchTerm.toLowerCase())) 
               // && !data.ml_keywords.toLowerCase().includes(searchTerm.toLowerCase())
               // && !data.metadata_json.html_keywords.toLowerCase().includes(searchTerm.toLowerCase())) return;
