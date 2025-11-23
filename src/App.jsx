@@ -31,7 +31,7 @@ function App() {
         );
         console.log(inner);
         const processedData = Object.fromEntries(
-          Object.entries(data).map(([key, value]) => [
+          Object.entries(inner).map(([key, value]) => [
             key,
             { ...value, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false}
           ])
