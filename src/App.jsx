@@ -114,7 +114,8 @@ function App() {
           </div>
           {Object.entries(database).map(([time, data], index) => {
             if (searchTerm != '' && !data.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) 
-              && !data.url.toLowerCase().includes(searchTerm.toLowerCase())) return;
+              && !data.url.toLowerCase().includes(searchTerm.toLowerCase())
+              && !data.keywords.ml_keywords.join("").toLowerCase().includes(searchTerm.toLowerCase())) return;
 
               // && !data.metadata.author.toLowerCase().includes(searchTerm.toLowerCase())) 
               // && !data.ml_keywords.toLowerCase().includes(searchTerm.toLowerCase())
