@@ -3,6 +3,30 @@ import { Link } from "react-router";
 import dayjs from 'dayjs'
 import './App.css'
 
+function deepParseJSON(value) {
+  if (typeof value === "string") {
+    try {
+      // Try to parse the string
+      const parsed = JSON.parse(value);
+      // Recursively parse the result in case it contains more JSON strings
+      return deepParseJSON(parsed);
+    } catch {
+      // Not JSON, return as-is
+      return value;
+    }
+  } else if (Array.isArray(value)) {
+    // Recursively parse each element of the array
+    return value.map(deepParseJSON);
+  } else if (value !== null && typeof value === "object") {
+    // Recursively parse each property of the object
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, deepParseJSON(v)])
+    );
+  }
+  // Primitive value (number, boolean, null)
+  return value;
+}
+
 function App() {
   const [database, setData] = useState({})
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,23 +39,24 @@ function App() {
       try {
         const response = await fetch('http://localhost:8000');
         const text = await response.text();
-        const outer = JSON.parse(text);
-        console.log(outer);
+        const data = deepParseJSON(text);
+        // const outer = JSON.parse(text);
+        // console.log(outer);
 
-        const inner = Object.fromEntries(
-          Object.entries(outer).map(([key, value]) => {
-            try {
-              // If value is itself a JSON string, parse it
-              return [key, JSON.parse(value)];
-            } catch {
-              // If not JSON (e.g. status), keep as-is
-              return [key, value];
-            }
-          })
-        );
-        console.log(inner);
+        // const inner = Object.fromEntries(
+        //   Object.entries(outer).map(([key, value]) => {
+        //     try {
+        //       // If value is itself a JSON string, parse it
+        //       return [key, JSON.parse(value)];
+        //     } catch {
+        //       // If not JSON (e.g. status), keep as-is
+        //       return [key, value];
+        //     }
+        //   })
+        // );
+        // console.log(inner);
         const processedData = Object.fromEntries(
-          Object.entries(inner).map(([key, value]) => [
+          Object.entries(data).map(([key, value]) => [
             key,
             { ...value, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false}
           ])
