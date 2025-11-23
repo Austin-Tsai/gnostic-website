@@ -62,6 +62,7 @@ function App() {
           ])
         );
         setData(processedData);
+        console.log(data);
       }
       catch (err) {
         console.log(err);
