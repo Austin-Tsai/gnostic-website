@@ -15,7 +15,9 @@ function App() {
       try {
         const response = await fetch('http://localhost:8000');
         const text = await response.text();
+        console.log(text);
         const data = JSON.parse(text);
+        console.log(data);
         const processedData = Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
           key,
