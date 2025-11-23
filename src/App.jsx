@@ -131,7 +131,7 @@ function App() {
             // </Fragment>
             
             return <div className="row" key={data.id}>
-              <div className="item">{dayjs(time).format("MM/DD/YY")}</div>
+              <div className="item">{dayjs(Number(time)).format("MM/DD/YY")}</div>
               {Object.entries(data["metadata"]).map(([category, info], index) => {
                 if (category == "htmlkeywords") {
                   // {console.log(info)}
