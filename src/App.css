@@ -17,12 +17,22 @@ html {
   display: flex;
   flex-direction: row;
   width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.search label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-right: 1rem;
+  color: #374151;
 }
 
 .search input {
   width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
+  max-width: 600px;
+  padding: 1.25rem 1.75rem;
+  font-size: 1.25rem;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   background: white;
@@ -42,9 +52,9 @@ html {
 }
 
 .container {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  grid-template-columns: repeat(6, 1fr);
   background-color: #fff;
   border-radius: 16px;
   overflow: hidden;
@@ -92,6 +102,12 @@ html {
   text-align: left;
 }
 
+.row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+}
+
 .header-left,
 .header-right,
 .header {
@@ -105,6 +121,25 @@ html {
   padding: 1.25rem 1.5rem;
 }
 
+.header-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.header-row .header {
+  flex: 1 1 auto;
+  min-width: 120px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem;
+  border: none;
+}
+
 .header-left {
   border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -113,7 +148,7 @@ html {
   border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.header {
+.header:not(.header-row .header) {
   border-left: 1px solid rgba(255, 255, 255, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
