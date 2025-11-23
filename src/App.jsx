@@ -1,27 +1,60 @@
-import { useState, Fragment } from 'react'
+import { useState, Fragment, use, useEffect } from 'react'
 import { Link } from "react-router";
 import dayjs from 'dayjs'
 import './App.css'
 
 function App() {
-  const [data, setData] = useState({})
+  const [database, setData] = useState({})
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
-  const temp = {
-    1000239600000: {url: "https://github.com/Austin-Tsai", ml_keywords: "Hello,Test,More,Words,To,Fill,Space", metadata_json: {title: "Github", author: "test", html_keywords: "asd"}, body_json: {paragraphs: "test", headers: "das"}, key: crypto.randomUUID()},
-    1763842800000: {url: "https://stackoverflow.com/questions/65314853/how-to-add-a-package-such-as-axios-to-a-chrome-extension://github.com/Austin-Tsai", ml_keywords: "Hello,Wsedf", metadata_json: {title: "Stackoverflow", author: "bm", html_keywords: "bds,adsnk"}, body_json: {paragraphs: "test", headers: "das"},  key: crypto.randomUUID()}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8000');
+        const text = await response.text();
+        const data = JSON.parse(text);
+        const processedData = Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          { ...value, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false}
+        ])
+      );
+        setData(processedData);
+      }
+      catch (err) {
+        console.log(err);
+      }
+      
+    }
+    fetchData();
+    // const temp = {
+    //   1000239600000: {url: "https://github.com/Austin-Tsai", ml_keywords: ["Hello","Test","More","Words","To","Fill","Space"], metadata_json: {title: "Github", author: "test", html_keywords: ["asd"]}, body_json: {paragraphs: ["plain text for stackoverflow", "new stuff", "woah"]}, id: crypto.randomUUID(), html_show: false, ml_show: false, url_show: false},
+    //   1763842800000: {url: "https://stackoverflow.com/questions/65314853/how-to-add-a-package-such-as-axios-to-a-chrome-extension://github.com/Austin-Tsai", ml_keywords: ["Hello","Wsedf"], metadata_json: {title: "Stackoverflow", author: "bm", html_keywords: ["bds","adsnk"]}, body_json: {paragraphs: ["Plain Text For Github", "Testsdf"]},  id: crypto.randomUUID(),  html_show: false, ml_show: false, url_show: false},
+    // }
+    // setData(temp)
+  }, []);
+  
+  const handleShow = (time, field) => {
+    setData(prevState => ({
+      ...prevState, 
+      [time]: {  
+        ...prevState[time],
+        [field]: !prevState[time][field]
+      }
+    }));
   }
 
   return (
     <>
       <div className="wrapper">
         <div className="search">
+          <label htmlFor="search">Search Terms (Comma Separated List)</label>
           <input
               type="text"
+              name="search"
               placeholder="Search..."
               value={searchTerm}
               onChange={handleSearchChange}
@@ -29,19 +62,21 @@ function App() {
         </div>
 
         <div className="container">
-          <div className="header-left">Date Served</div>
-          <div className="header">Title</div>
-          <div className="header">Author</div>
-          <div className="header">HTML Keywords</div>
-          <div className="header">ML Keywords</div>
-          <div className="header-right">URL</div>
-
-          {Object.entries(temp).map(([time, data], index) => {
+          <div className="row">
+            <div className="header">Date Served</div>
+            <div className="header">Title</div>
+            <div className="header">Author</div>
+            <div className="header">HTML Keywords</div>
+            <div className="header">ML Keywords</div>
+            <div className="header">URL</div>
+            <div className="header">Plain Text</div>
+          </div>
+          {Object.entries(database).map(([time, data], index) => {
             if (searchTerm != '' && !data.metadata_json.title.toLowerCase().includes(searchTerm.toLowerCase()) 
               && !data.url.toLowerCase().includes(searchTerm.toLowerCase())
-              && !data.metadata_json.author.toLowerCase().includes(searchTerm.toLowerCase())
-              && !data.ml_keywords.toLowerCase().includes(searchTerm.toLowerCase())
-              && !data.metadata_json.html_keywords.toLowerCase().includes(searchTerm.toLowerCase())) return;
+              && !data.metadata_json.author.toLowerCase().includes(searchTerm.toLowerCase())) return;
+              // && !data.ml_keywords.toLowerCase().includes(searchTerm.toLowerCase())
+              // && !data.metadata_json.html_keywords.toLowerCase().includes(searchTerm.toLowerCase())) return;
 
             // if (index == Object.keys(temp).length - 1) 
             //   return <Fragment key={data.key}>
@@ -53,12 +88,16 @@ function App() {
             //   })}
             // </Fragment>
             
-            return <Fragment key={data.key}>
-              <div className="item-left">
-                <Link to={"page/"+time}>{dayjs(time).format("DD/MM/YY")}</Link>
-              </div>
+            return <div className="row" key={data.id}>
+              <div className="item">{dayjs(time).format("MM/DD/YY")}</div>
               {Object.entries(data["metadata_json"]).map(([category, info], index) => {
-                // if (category == "key") return
+                if (category == "html_keywords") {
+                  // {console.log(info)}
+                  return <div className="item">
+                    {data.html_show ? <div>{info.join(", ")}</div> : <div></div>}
+                    <button onClick={() => handleShow(time, 'html_show')}>{data.html_show ? "Hide" : "Show"}</button>
+                  </div>
+                }
                 // if (category == "time") {
                   //   return <div className="item">{dayjs(info).format("DD/MM/YY")}</div>
                   // }
@@ -66,9 +105,21 @@ function App() {
                   // if (index == 2) return <div className="item-right">{info}</div>
                   return <div className="item">{info}</div>
                 })}
-                <div className="item">{data.ml_keywords}</div>
-                <div className="item-right">{data.url}</div>
-            </Fragment>
+                <div className="item">
+                    {data.ml_show ? <div>{data.ml_keywords.join(", ")}</div> : <div></div>}
+                    <button onClick={() => handleShow(time, 'ml_show')}>{data.ml_show ? "Hide" : "Show"}</button>
+                  </div>
+                <div className="item">
+                    {data.url_show || data.url.length < 50 ? <div>{data.url}</div> : <div>{data.url.substring(0, 50)+"..."}</div>}
+                    {data.url.length >= 50 && <button onClick={() => handleShow(time, 'url_show')}>{data.url_show ? "Hide" : "Show More"}</button>}
+                  </div>
+                <div className="item">
+                  <Link 
+                    to={"page/"+time}
+                    state={{ plainText: data.body_json.paragraphs }}
+                  >Plain Text</Link>
+                </div>
+            </div>
           })}
         </div>
       </div>
