@@ -102,10 +102,24 @@ html {
   text-align: left;
 }
 
+.row .item:first-child {
+  border-left: none;
+}
+
+.row .item:last-child {
+  border-right: none;
+}
+
 .row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
+  min-width: 0;
+}
+
+.row>* {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .header-left,
@@ -119,6 +133,16 @@ html {
   letter-spacing: 0.5px;
   text-align: center;
   padding: 1.25rem 1.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.row .header:first-child {
+  border-left: none;
+}
+
+.row .header:last-child {
+  border-right: none;
 }
 
 .header-row {
