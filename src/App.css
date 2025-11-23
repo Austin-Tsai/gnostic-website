@@ -256,3 +256,7 @@ html {
     color: #6b7280;
   }
 }
+
+.plain_text {
+  padding: 20px;
+}

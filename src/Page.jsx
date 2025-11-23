@@ -32,13 +32,12 @@ function Page() {
     //     console.log(time)
     // }, [time])
     
-    return <>
-
+    return <div className="plain_text">
         {state.plainText.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
         ))
         }
-    </>
+    </div>
 }
 
 export default Page;
