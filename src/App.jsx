@@ -39,6 +39,7 @@ function App() {
       try {
         const response = await fetch('http://localhost:8000');
         const text = await response.text();
+        console.log(text);
         const data = deepParseJSON(text);
         // const outer = JSON.parse(text);
         // console.log(outer);
